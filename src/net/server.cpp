@@ -14,6 +14,7 @@ found in the LICENSE file.
 
 static DEF_PROC(ping);
 static DEF_PROC(info);
+static DEF_PROC(select); // compatible with redis select command by zkc
 static DEF_PROC(auth);
 static DEF_PROC(list_allow_ip);
 static DEF_PROC(add_allow_ip);
@@ -63,6 +64,7 @@ NetworkServer::NetworkServer(){
 	// add built-in procs, can be overridden
 	proc_map.set_proc("ping", "r", proc_ping);
 	proc_map.set_proc("info", "r", proc_info);
+	proc_map.set_proc("select", "r", proc_select); // compatible with redis select command by zkc
 	proc_map.set_proc("auth", "r", proc_auth);
 	proc_map.set_proc("list_allow_ip", "r", proc_list_allow_ip);
 	proc_map.set_proc("add_allow_ip",  "r", proc_add_allow_ip);
@@ -524,6 +526,13 @@ static int proc_info(NetworkServer *net, Link *link, const Request &req, Respons
 		resp->push_back("total_calls");
 		resp->add(calls);
 	}
+	return 0;
+}
+
+// compatible with redis select command by zkc
+static int proc_select(NetworkServer *net, Link *link, const Request &req, Response *resp){
+	resp->push_back("ok");
+	resp->push_back("1");
 	return 0;
 }
 
